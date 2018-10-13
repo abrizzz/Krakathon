@@ -34,7 +34,7 @@ function petitTrue4(f) {
     return a() == 1 && a() == 2 && a() == 3
     && b() == 1 && b() == 2;
 }
-console.log(petitTrue4());
+console.log(petitTrue4((c=1)=>(()=>c++)));
 
 
 // exo 5 - 50 points
@@ -60,8 +60,7 @@ console.log(petitTrue5());
 function petitTrue6(x,y,z) {
     return x && x == y && y == z && x != z;
 }
-console.log(petitTrue6(true, 1, 1.0));
-
+console.log(petitTrue6(1,i=1,{valueOf:_=>i++}));
 
 // exo7 - 75 points
 // en 16 caractere
@@ -70,7 +69,7 @@ console.log(petitTrue6(true, 1, 1.0));
 function petitTrue7(x) {
     return (x++ !== x) && (x++ === x);
 }
-console.log(petitTrue7( ));
+console.log(petitTrue7(2**53-1));
 
 
 // exo8 - 30 points
@@ -86,4 +85,4 @@ console.log(petitTrue8(Object.create(null)));
 function petitTrue9(a){
     return a in a;
 }
-console.log(petitTrue9());
+console.log(petitTrue9([0]));
