@@ -1,0 +1,166 @@
+<html>
+    <body style="font-size: 10em; font-family:monospace">
+        <script src="js/annyang.min.js"></script>
+        <script>
+            window.onload = function(){
+
+                empty = '-'
+
+                game = {
+                    'grid' : [["-","-","-"],["-","^","-"],["-","-","-"]],
+                    'boat' : '^'
+                }
+
+                function drawGrid(){
+                    document.getElementById("grid").innerHTML = '';
+                    g = ''
+                    for(var i=0; i < window.game.grid.length; i++){
+                            g = g + window.game.grid[i].join(" ") + "<br/>"
+                    }
+                    document.getElementById("grid").innerHTML = g;
+                }
+
+                function getBoatPos(){
+                    for(var i=0; i < window.game.grid.length; i++){
+                        for(var j=0; j < window.game.grid[i].length; j++){
+                            if (window.game.grid[i][j] == window.game.boat){
+                                return [i,j];
+                            }
+                        }
+                    }
+                }
+
+                var ma = function moveAvant(){
+                    console.log('ma');
+                    boat_pos = getBoatPos();
+                    switch(window.game.boat){
+                        case "^":
+                            if(boat_pos[0] > 0){
+                                window.game.grid[boat_pos[0]][boat_pos[1]] = empty;
+                                window.game.grid[boat_pos[0]-1][boat_pos[1]] = window.game.boat;
+                            }
+                            break;
+                        case ">":
+                            if(boat_pos[1] < window.game.grid.length-1){
+                                window.game.grid[boat_pos[0]][boat_pos[1]] = empty;
+                                window.game.grid[boat_pos[0]][boat_pos[1]+1] = window.game.boat;
+                            }
+                            break;
+                        case "v":
+                            if(boat_pos[0] < window.game.grid.length-1){
+                                window.game.grid[boat_pos[0]][boat_pos[1]] = empty;
+                                window.game.grid[boat_pos[0]+1][boat_pos[1]] = window.game.boat;
+                            }
+                            break;
+                        case "<":
+                            if(boat_pos[1] > 0){
+                                window.game.grid[boat_pos[0]][boat_pos[1]] = empty;
+                                window.game.grid[boat_pos[0]][boat_pos[1]-1] = window.game.boat;
+                            }
+                            break;
+                    }
+                    drawGrid();
+                }
+
+                var md = function moveDroite(){
+                    console.log('md');
+                    boat_pos = getBoatPos();
+                    switch (window.game.boat){
+                        case "^":
+                            window.game.boat = ">";
+                            break;
+                        case ">":
+                            window.game.boat = "v";
+                            break;
+                        case "v":
+                            window.game.boat = "<";
+                            break;
+                        case "<":
+                            window.game.boat = "^";
+                            break;
+                    }
+                    window.game.grid[boat_pos[0]][boat_pos[1]] = window.game.boat;
+                    drawGrid();
+                }
+
+                var mg = function moveGauche(){
+                    console.log('mg');
+                    boat_pos = getBoatPos();
+                    switch (window.game.boat){
+                        case "^":
+                            window.game.boat = "<";
+                            break;
+                        case "<":
+                            window.game.boat = "v";
+                            break;
+                        case "v":
+                            window.game.boat = ">";
+                            break;
+                        case ">":
+                            window.game.boat = "^";
+                            break;
+                    }
+                    window.game.grid[boat_pos[0]][boat_pos[1]] = window.game.boat;
+                    drawGrid();
+                }
+
+                if (annyang) {
+                    // Let's define our first command. First the text we expect, and then the function it should call
+                    var commands = {
+                        // 'en avant': ma,
+                        // 'En Avant': ma,
+                        // 'En avant': ma,
+                        // "en-avant": ma,
+                        // "on avant": ma,
+                        // 'à droite': md,
+                        // "adroite": md,
+                        // "Ah droite": md,
+                        // 'à gauche' : mg,
+                        // ' à gauche' : mg,
+                        // "Agos" : mg,
+                        // " Ah gauche" : mg,
+                        // "la gauche": mg,
+                        // "gauche" : mg,
+                        // "à gauche" : mg,
+                        // "Ah gauche" : mg
+                        'gauche': {'regexp': /gauche/i, 'callback': mg},
+                        'droite': {'regexp': /droite/i, 'callback': md},
+                        'avant': {'regexp': /avant/i, 'callback': ma}
+
+                    };
+
+                    annyang.addCallback('error', function() {
+                        console.log("error")
+                    });
+
+                    annyang.addCallback('result', function(phrases) {
+                        console.log(phrases)
+                        // phrases.forEach(p => {
+                        //     if(p.toLowerCase().includes("gauche")){
+                        //         moveGauche(game);
+                        //     } else if (p.toLowerCase().includes("droite")){
+                        //         moveDroite(game);
+                        //     } else if (p.toLowerCase().includes("avant")){
+                        //         moveAvant(game);
+                        //     }
+                        // });
+                    });
+
+                    annyang.setLanguage("fr-FR");
+
+                    // Add our commands to annyang
+                    annyang.addCommands(commands);
+
+                    // Start listening. You can call this here, or attach this call to an event, button, etc.
+                    annyang.start();
+                    console.log("started");
+
+                    drawGrid();
+                }
+            }
+        </script>
+        <div id="grid">
+
+        </div>
+    </body>
+</html>
