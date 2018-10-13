@@ -1,0 +1,21 @@
+def ppcm(p,n):
+    for k in range(1,n+1):
+        z=k*p
+        if z%n==0:
+            return z
+p=1
+n=20
+for i in range(1,n+1):
+   p=ppcm(p,i)
+print p
+
+OR
+
+for i in range(1,100000000000):
+  trouve = True
+  for n in range(1,20):
+    if i % n != 0:
+      trouve = False
+      break
+if trouve:
+  print ("Nombre:" + (str)(i))
