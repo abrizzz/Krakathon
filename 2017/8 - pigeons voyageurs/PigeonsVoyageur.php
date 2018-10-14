@@ -21,7 +21,7 @@ function getRowCount($pigeon){
    $password = "";
    $dbname = "test";
    // Create connection
-   $conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($servername, $username, $password, $dbname);
 	$findQuery = "Select * from Pigeons where id ='$pigeon' limit 1";
 	$result = mysqli_query($conn, $findQuery);
 	
@@ -35,7 +35,7 @@ function update($pigeon){
    $password = "";
    $dbname = "test";
    // Create connection
-   $conn = new mysqli($servername, $username, $password, $dbname);
+	$conn = new mysqli($servername, $username, $password, $dbname);
 	$row_cnt = getRowCount($pigeon);
 	if ($row_cnt>0){
 		$getCount = "Select numberTimes from Pigeons where id ='$pigeon' limit 1";
@@ -64,14 +64,24 @@ function findMissing(){
    $result = mysqli_query($conn, $findQuery);
    while ($row = mysqli_fetch_array($result)) {
       echo nl2br($row["ID"] ."-" . $row["NUMBERTIMES"]."\n");
-	 // print(nl2br("\n"));
-	//  print(nl2br("\n"));
    }
    mysqli_commit($conn);
    return;
 }
 
-ini_set('memory_limit', '1M');
+function read($file)
+{
+    $fp = fopen($file, 'rb');
+	
+    while(($line = fgets($fp)) !== false)
+        yield rtrim($line, "\r\n");
+	echo nl2br (memory_get_usage (TRUE)."\n");
+	 $memoryUsed = memory_get_peak_usage(false);
+	 echo nl2br($memoryUsed."\n");
+    fclose($fp);
+}
+
+ini_set('memory_limit', '100');
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -90,26 +100,39 @@ NUMBERTIMES int
 )";
 
 $query = "SELECT 1 FROM Pigeons";
-$result = mysqli_query($conn, $query);
 
-if(empty($result)) {
-	if ($conn->query($sql) === TRUE) {
-		echo "Table MyGuests created successfully";
-	} else {
-		
-		echo "Error creating table: " . $conn->error;
-	}
+$result = mysqli_query($conn, $query);
+if (!empty($result)){
+	$delete= "DROP TABLE Pigeons";
+	$result = mysqli_query($conn, $delete);
+}
+if ($conn->query($sql) === TRUE) {
+	echo "Table MyGuests created successfully";
+} else {		
+	echo "Error creating table: " . $conn->error;
 }
 
 $conn->close();
+$path='10Mpigeons.txt';
 $pigeonId="";
-$file_lines = file('100pigeons2.txt');
-	foreach ($file_lines as $line) {
-		$pigeonId = trim($line);
-		update($pigeonId);
+foreach(read($path) as $line)
+{
+    $pigeonId = trim($line);
+			update($pigeonId);
+}
+
+//$file_lines = file('10Mpigeons.txt');
+	//foreach ($file_lines as $line) {
+		//print("here");
+		//$pigeonId = trim($line);
+		//$intPigeon = (int)$pigeonId;
+		//update($intPigeon);
 		
-	}
-	findMissing();
-	echo("done");
+	//}
+
 	
+	findMissing();
+	
+	echo("done");
+
 ?>
