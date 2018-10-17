@@ -25,7 +25,7 @@ console.log(petitTrue2(NaN));
 function petitTrue3(a, b) {
     return a === b && 1/a < 1/b
 }
-console.log(petitTrue3());
+console.log(petitTrue3(-0,0));
 
 // exo 4 - 200 poin
 // en 9 caracteres max
@@ -51,7 +51,7 @@ function petitTrue5(x) {
     }
     return true;
 }
-console.log(petitTrue5());
+console.log(petitTrue5([...Array(20).keys()]));
 
 
 // exo6 - 100 points
